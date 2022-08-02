@@ -1,4 +1,4 @@
-import '../commands/commands_list.dart';
+import '../commands/commands_list_extend.dart';
 import '../commands/impl/help/help.dart';
 import '../commands/interface/command.dart';
 import '../common/utils/logger/log_utils.dart';
