@@ -46,9 +46,13 @@ class GenerateModelCommand extends origin.GenerateModelCommand {
       useStorage,
     );
 
-    // newFileModel = Structure.model(name, 'model', false, on: onCommand);
-    newFileModel = Structure.model(name, 'model', true,
-        on: onCommand, folderName: name.snakeCase);
+    newFileModel = Structure.model(
+      name,
+      'model',
+      true,
+      on: onCommand,
+      folderName: getFolderName('models'),
+    );
 
     var dartCode = classGenerator.generateDartClasses(await _jsonRawData);
 
@@ -105,7 +109,10 @@ class GenerateModelCommand extends origin.GenerateModelCommand {
       onCommand,
       true,
       sample,
-      name.snakeCase,
+      getFolderName('repositories'),
     );
   }
+
+  String getFolderName(String folderName) =>
+      'data/$folderName/${name.snakeCase}';
 }
