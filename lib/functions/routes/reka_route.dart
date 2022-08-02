@@ -16,23 +16,27 @@ import '../find_file/find_file_by_name.dart';
 import '../formatter_dart_file/frommatter_dart_file.dart';
 
 void _createAppRoute(String name, String path) {
-  final appRoutesFile = findFileByName('app_routes.dart');
-  if (appRoutesFile.path.isNotEmpty) return;
+  final appRoutesFile = findFileByName('app_route.dart');
+  String appRoutePath = appRoutesFile.path;
 
-  final routePath = _createRoute('app');
+  final isExist = appRoutePath.isNotEmpty;
+  if (!isExist) appRoutePath = _createRoute('app');
 
-  final routesFile = File(routePath);
+  final routesFile = File(appRoutePath);
 
   List<String> contentLines = routesFile.readAsLinesSync();
+
+  if (!isExist) {
+    contentLines = contentLines.addContent(
+      "static const INITIAL =  ${name.pascalCase}Route.${name.toUpperCase()};",
+      after: 'extends RouteBase',
+    );
+  }
 
   contentLines = contentLines
       .addContent(
         _getRouteImport(path),
         after: 'import',
-      )
-      .addContent(
-        "static const INITIAL =  ${name.pascalCase}Route.${name.toUpperCase()};",
-        after: 'extends RouteBase',
       )
       .addContent(
         "...${name.pascalCase}Route.routes,",
