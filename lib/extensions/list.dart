@@ -12,4 +12,24 @@ extension ListExtension<T> on List<T> {
     }
     return this;
   }
+
+  List<String> addContent(
+    String value, {
+    required String after,
+    bool replace = false,
+  }) {
+    bool added = false;
+    List<String> contentLines = this as List<String>;
+
+    contentLines = contentLines.map((e) {
+      if (added) return e;
+      if (!e.contains(after)) return e;
+
+      added = true;
+      if (replace) return value;
+      return "$e $value";
+    }).toList();
+
+    return contentLines;
+  }
 }

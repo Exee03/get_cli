@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:get_cli/extensions.dart';
 import 'package:recase/recase.dart';
 
 import '../../common/utils/logger/log_utils.dart';
@@ -24,21 +25,19 @@ void _createAppRoute(String name, String path) {
 
   List<String> contentLines = routesFile.readAsLinesSync();
 
-  contentLines = _addContent(
-    _getRouteImport(path),
-    after: 'import',
-    contentLines: contentLines,
-  );
-  contentLines = _addContent(
-    "static const INITIAL =  ${name.pascalCase}Route.${name.toUpperCase()};",
-    after: 'extends RouteBase',
-    contentLines: contentLines,
-  );
-  contentLines = _addContent(
-    "...${name.pascalCase}Route.routes,",
-    after: 'routes =',
-    contentLines: contentLines,
-  );
+  contentLines = contentLines
+      .addContent(
+        _getRouteImport(path),
+        after: 'import',
+      )
+      .addContent(
+        "static const INITIAL =  ${name.pascalCase}Route.${name.toUpperCase()};",
+        after: 'extends RouteBase',
+      )
+      .addContent(
+        "...${name.pascalCase}Route.routes,",
+        after: 'routes =',
+      );
   final content = formatterDartFile(contentLines.join('\n'));
 
   writeFile(
@@ -62,31 +61,24 @@ void updateRoute(
 
   List<String> contentLines = routesFile.readAsLinesSync();
 
-  contentLines = _addContent(
-    _getRouteImport(providerPath),
-    after: 'import',
-    contentLines: contentLines,
-  );
-  contentLines = _addContent(
-    _getRouteImport(viewPath),
-    after: 'import',
-    contentLines: contentLines,
-  );
-  contentLines = _addContent(
-    "static const ${name.snakeCase.toUpperCase()} = '/${name.snakeCase.toLowerCase()}';",
-    after: 'extends RouteBase',
-    contentLines: contentLines,
-  );
-  contentLines = _addContent(
-    '''GetPage(
-name: ${name.snakeCase.toUpperCase()},
-page:()=> const ${name.pascalCase}View(),
-binding: ${name.pascalCase}Provider(),
-),];''',
-    after: '];',
-    contentLines: contentLines,
-    replace: true,
-  );
+  contentLines = contentLines
+      .addContent(
+        _getRouteImport(providerPath),
+        after: 'import',
+      )
+      .addContent(
+        _getRouteImport(viewPath),
+        after: 'import',
+      )
+      .addContent(
+        "static const ${name.snakeCase.toUpperCase()} = '/${name.snakeCase.toLowerCase()}';",
+        after: 'extends RouteBase',
+      )
+      .addContent(
+        'GetPage(name: ${name.snakeCase.toUpperCase()},page:()=> const ${name.pascalCase}View(),binding: ${name.pascalCase}Provider(),),];',
+        after: '];',
+        replace: true,
+      );
   final content = formatterDartFile(contentLines.join('\n'));
 
   writeFile(
@@ -99,26 +91,6 @@ binding: ${name.pascalCase}Provider(),
 
   LogService.success(
       Translation(LocaleKeys.sucess_route_created).trArgs([name.pascalCase]));
-}
-
-List<String> _addContent(
-  String value, {
-  required List<String> contentLines,
-  required String after,
-  bool replace = false,
-}) {
-  bool added = false;
-
-  contentLines = contentLines.map((e) {
-    if (added) return e;
-    if (!e.contains(after)) return e;
-
-    added = true;
-    if (replace) return value;
-    return "$e $value";
-  }).toList();
-
-  return contentLines;
 }
 
 String _getRouteImport(String dir) {
