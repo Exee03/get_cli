@@ -7,6 +7,7 @@ export 'create/screen/screen_extend.dart';
 export 'create/view/view_extend.dart';
 export 'create/bloc/bloc.dart';
 export 'create/state/state.dart';
+export 'create/component/component.dart';
 export 'generate/locales/locales.dart';
 export 'generate/model/model_extend.dart';
 export 'help/help_extend.dart';

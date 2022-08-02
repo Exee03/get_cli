@@ -14,6 +14,7 @@ final List<Command> commands = [
       CreateViewCommand(),
       CreateBlocCommand(),
       CreateStateCommand(),
+      CreateComponentCommand(),
     ],
     ['-c'],
   ),
