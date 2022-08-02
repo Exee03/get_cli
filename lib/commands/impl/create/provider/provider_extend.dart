@@ -49,6 +49,7 @@ class CreateProviderCommand extends CommandBase {
       providerBaseDir,
       stateDir,
       controllerDir,
+      useAsync: name == 'app',
     );
 
     sample = await getCustomContent<ProviderSample>(withArgument, sample, name);

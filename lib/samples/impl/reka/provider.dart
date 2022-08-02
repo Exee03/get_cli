@@ -11,6 +11,7 @@ class ProviderSample extends Sample {
   final String _blocDir;
   final String _stateDir;
   final String _controllerDir;
+  final bool useAsync;
 
   ProviderSample(
     String path,
@@ -21,6 +22,7 @@ class ProviderSample extends Sample {
     this._stateDir,
     this._controllerDir, {
     bool overwrite = false,
+    this.useAsync = false,
   }) : super(
           path,
           overwrite: overwrite,
@@ -55,6 +57,11 @@ class ProviderSample extends Sample {
     return value;
   }
 
+  String get initMethod {
+    if (useAsync) return 'Future<void> init() async {';
+    return 'void init() {';
+  }
+
   @override
   String get content => '''
 import 'package:${PubspecUtils.projectName}/$_baseDir';
@@ -63,7 +70,7 @@ $addImport
 
 class ${_name.pascalCase}Provider extends ProviderBase {
   @override
-  void init() {
+  $initMethod
     Get.lazyPut<${_moduleName.pascalCase}State>(() => ${_moduleName.pascalCase}State());
     $addContent
   }

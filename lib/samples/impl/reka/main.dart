@@ -1,18 +1,28 @@
+import 'package:recase/recase.dart';
+
 import '../../interface/sample_interface.dart';
 
 class RekaMainSample extends Sample {
+  final String _name;
   final bool? isServer;
-  RekaMainSample({this.isServer}) : super('lib/main.dart', overwrite: true);
+
+  RekaMainSample(
+    this._name, {
+    this.isServer,
+  }) : super('lib/main.dart', overwrite: true);
 
   String get _flutterMain => '''import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'app/providers/app_provider.dart';
 import 'app/routes/app_route.dart';
 
-void main() {
+Future<void> main() async {
+  await AppProvider().init();
+
   runApp(
     GetMaterialApp(
-      title: "Application",
+      title: '${_name.pascalCase}',
       initialRoute: AppRoute.INITIAL,
       getPages: AppRoute.routes,
     ),

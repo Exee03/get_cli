@@ -16,9 +16,18 @@ Future<void> createInitReka() async {
   if (!isServerProject) {
     await installGet();
   }
-  RekaMainSample(isServer: isServerProject).create();
-  await CreateModuleCommand().execute();
-  await CreatePageCommand().execute();
+  RekaMainSample(PubspecUtils.projectName ?? '', isServer: isServerProject)
+      .create();
+  // need to run first
+  await Future.wait([
+    CreateModuleCommand().execute(),
+    CreateStateCommand().handle('app'),
+  ]);
+  await Future.wait([
+    CreatePageCommand().execute(),
+    CreateBlocCommand().handle('app'),
+    CreateProviderCommand().handle('app'),
+  ]);
   var initialDirs = [
     Directory(Structure.replaceAsExpected(path: 'lib/app/components/')),
   ];
